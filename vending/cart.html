@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Cart</title>
+<style>
+table { border-collapse: collapse; width:70%; margin:auto; }
+th,td{ border:1px solid #333; padding:10px; text-align:center; }
+th { background:#f2f2f2; }
+button { padding:5px 10px; margin:2px;}
+.payment{
+  width: 200px;
+  height: 180px;
+  border-width: 3px;
+  border-style: solid;
+  border-radius: 20px;
+  margin-top: 75px;
+  margin-left: 500px;
+  text-align: center;
+}
+</style>
+</head>
+<body>
+<h1 style="text-align:center;">Your Cart</h1>
+<table id="cartTable">
+  <tr>
+    <th>Item</th>
+    <th>Price</th>
+    <th>Quantity</th>
+    <th>Subtotal</th>
+    <th>Action</th>
+  </tr>
+</table>
+<h2 id="total" style="text-align:center;"></h2>
+
+<div style="text-align:center;">
+  <button onclick="clearCart()">Clear Cart</button>
+  <a href="vending.html"><button>Back</button></a>
+</div>
+
+<div class="payment">
+  <h3>Select Payment Method:</h3>
+  <input type="radio" name="payment" value="Cash"> <label>Cash</label><br>
+  <input type="radio" name="payment" value="GPay"> <label>GPay</label><br>
+  <input type="radio" name="payment" value="Card"> <label>Card</label><br><br>
+  <button onclick="payNow()">Pay Now</button>
+</div>
+
+<script>
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+function saveCart() {
+  localStorage.setItem("cart", JSON.stringify(cart));
+}
+
+function renderCart() {
+  const table = document.getElementById("cartTable");
+  table.innerHTML = `
+    <tr>
+      <th>Item</th>
+      <th>Price</th>
+      <th>Quantity</th>
+      <th>Subtotal</th>
+      <th>Action</th>
+    </tr>`;
+
+  let total = 0;
+  if (cart.length === 0) {
+    const row = table.insertRow();
+    const cell = row.insertCell(0);
+    cell.colSpan = 5;
+    cell.innerText = "Your cart is empty.";
+    document.getElementById("total").innerText = "";
+    return;
+  }
+  cart.forEach((item, index) => {
+    const row = table.insertRow();
+    row.insertCell(0).innerText = item.name;
+    row.insertCell(1).innerText = `$${item.price}`;
+    row.insertCell(2).innerText = item.qty;
+    row.insertCell(3).innerText = `$${(item.price * item.qty).toFixed(2)}`;
+    const actionCell = row.insertCell(4);
+    const minusBtn = document.createElement("button");
+    minusBtn.textContent = "−";
+    minusBtn.onclick = () => {
+      if (item.qty > 1) {
+        item.qty--;
+      } else {
+        cart.splice(index, 1); 
+      }
+      saveCart();
+      renderCart();
+    };
+    const delBtn = document.createElement("button");
+    delBtn.textContent = "Remove";
+    delBtn.onclick = () => {
+      cart.splice(index, 1);
+      saveCart();
+      renderCart();
+    };
+    actionCell.append(minusBtn, delBtn);
+    total += item.price * item.qty;
+  });
+  document.getElementById("total").innerText = `Total: $${total.toFixed(2)}`;
+}
+function clearCart() {
+  if (confirm("Clear all items?")) {
+    cart = [];
+    saveCart();
+    renderCart();
+  }
+}
+function payNow() {
+  if (cart.length === 0) {
+    alert("Your cart is empty!");
+    return;
+  }
+  const selected = document.querySelector('input[name="payment"]:checked');
+  if (!selected) {
+    alert("Please select a payment method.");
+    return;
+  }
+  const paymentMethod = selected.value;
+  const totalText = document.getElementById("total").innerText;
+  if (paymentMethod === "GPay") {
+    const password = prompt("Enter your GPay password (simulated):");
+    if (!password) {
+      alert("Payment cancelled! Password required.");
+      return;
+    } else if (password == 12340) {
+      alert(`Payment of ${totalText} successful on GPay!`);
+    } else {
+      alert("Incorrect password! Payment failed.");
+      return;
+    }
+  } else {
+    alert(`Payment of ${totalText} successful on ${paymentMethod}!`);
+  }
+  cart = [];
+  saveCart();
+  renderCart();
+}
+renderCart();
+</script>
+</body>
+</html>

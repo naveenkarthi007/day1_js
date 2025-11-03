@@ -1,0 +1,23 @@
+.square{
+    width: 550px;
+    height: 400px;
+    background-color: whitesmoke;
+    border-radius: 20px;
+    border-color:black ;
+    border-width: 5px;
+    border-style: solid;
+    display: inline-block;
+    margin-left: 30px;
+    margin-bottom: 30PX;
+}
+body{
+    background-color:tan;
+}
+button:hover{
+    transform: scale(1.1);
+    transition-duration: 2s;
+}
+ .square:hover{
+    transform: scale(1.1);
+    transition-duration: 2s;
+ }
