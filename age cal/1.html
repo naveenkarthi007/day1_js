@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>document</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-image:url(beautiful-mountains-landscape.jpg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    h2 { color: #333; }
+    .container {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      width: 280px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    
+    input {
+      padding: 8px;
+      width: 90%;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      padding: 8px 15px;
+      border: none;
+      border-radius: 5px;
+      background: #007bff;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    p { color: #333; font-weight: bold; }
+  </style>
+</head>
+<body>  
+<div class="container">
+  <h2>Age Calculator</h2>
+  <label>First Date of Birth:</label><br>
+  <input type="date" id="dob1"><br>
+  <label>Second Date of Birth:</label><br>
+  <input type="date" id="dob2"><br>
+  <button onclick="calculateAgeDifference()">Calculate Difference</button>
+  <p id="ageResult"></p>
+</div>
+
+  <div class="container">
+    <h2>Temperature Converter</h2>
+    <input type="number" id="temp" placeholder="Enter Temperature">
+    <select id="scale">
+      <option value="C">Celsius to Fahrenheit</option>
+      <option value="CK">Celsius to Kelvin</option>
+      <option value="F">Fahrenheit to Celsius</option>
+      <option value="FK">Fahrenheit to Kelvin</option>
+      <option value="K">Kelvin to Celsius</option>
+      <option value="KF">Kelvin to Fahrenheit</option>
+    </select>
+    <br>
+    <br>
+    <button onclick="convertTemp()">Convert</button>
+    <p id="tempResult"></p>
+  </div>
+
+  <script>
+
+  function calculateAgeDifference() {
+    const dob1 = document.getElementById("dob1").value;
+    const dob2 = document.getElementById("dob2").value;
+
+    if (!dob1 || !dob2) {
+      document.getElementById("ageResult").innerText = "Please select both dates.";
+    }
+
+    const date1 = new Date(dob1);
+    const date2 = new Date(dob2);
+    
+    // if (date1 > date2) [date1, date2] = [date2, date1];
+
+    let years = date2.getFullYear() - date1.getFullYear();
+    let months = date2.getMonth() - date1.getMonth();
+    let days = date2.getDate() - date1.getDate();
+
+    if (days < 0) {
+      months--;
+      const prevMonthDays = new Date(date2.getFullYear(), date2.getMonth(), 0).getDate();
+      days += prevMonthDays;
+    }
+
+    if (months < 0) {
+      years--;
+      months += 12;
+    }
+    document.getElementById("ageResult").innerText = `Your age ${years} years, ${months} months, and ${days} days.`;
+  }
+  function convertTemp() {
+      let temp = parseFloat(document.getElementById("temp").value);
+      const scale = document.getElementById("scale").value;
+      if (isNaN(temp)) {
+        document.getElementById("tempResult").innerText = "Enter a valid number.";
+      }
+      let result;
+      if (scale === "C") {
+        result = (temp * 9/5) + 32;
+        document.getElementById("tempResult").innerText = `${temp}°C = ${result.toFixed(2)}°F`;
+      } else{
+        result = (temp - 32) * 5/9;
+        document.getElementById("tempResult").innerText = `${temp}°F = ${result.toFixed(2)}°C`;
+      }
+     
+    }
+    // K to c =temp -273.15
+    // K to F =(temp -273.15) *9/5 +32
+    // C to K = temp +273.15
+    // F to K = (temp -32) *5/9 +273.15
+  </script>
+</body>
+</html>
